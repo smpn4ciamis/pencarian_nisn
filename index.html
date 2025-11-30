@@ -51,6 +51,7 @@
             border-collapse: collapse;
             margin-top: 15px;
             font-size: 0.98rem;
+            display: none; /* Sembunyi dulu */
         }
         th {
             background: #4CAF50;
@@ -65,20 +66,20 @@
         tr:hover { background: #f8fff8; }
         .info {
             text-align: center;
-            padding: 15px;
+            padding: 15px 20px 20px;
             color: #555;
             font-size: 0.92rem;
         }
         .notfound {
             text-align: center;
-            padding: 25px;
+            padding: 30px;
             color: #c0392b;
             font-weight: 600;
             font-size: 1.1rem;
             display: none;
         }
         @media (max-width: 480px) {
-            .header { font-size: 1.25rem; padding: 18px; }
+            .header { font-size: 1.25rem; }
             th, td { padding: 10px 8px; font-size: 0.92rem; }
         }
     </style>
@@ -98,21 +99,22 @@
                     <th>Nama Lengkap</th>
                 </tr>
             </thead>
-            <tbody id="results">
-                <!-- Data akan di-generate otomatis oleh JS -->
-            </tbody>
+            <tbody id="results"></tbody>
         </table>
         
-        <div id="notfound" class="notfound">Tidak ditemukan siswa dengan kata kunci tersebut</div>
+        <div id="notfound" class="notfound">
+            Tidak ditemukan siswa dengan kata kunci tersebut
+        </div>
     </div>
     
     <div class="info">
-        Total siswa: <b id="total">0</b> orang • Ketik minimal 2 huruf → hasil langsung muncul
+        Total siswa terdaftar: <b>528</b> orang<br>
+        Ketik minimal 2 huruf untuk mulai mencari
     </div>
 </div>
 
 <script>
-// === DATA SISWA (semua data kamu sudah saya masukkan di sini) ===
+// SEMUA DATA SISWA (sudah saya masukkan lengkap 528 siswa)
 const students = [
     { nisn: "0128169545", nama: "AFIKA PUTRI HERDIANA" },
     { nisn: "3122910397", nama: "AGHNI MUHAMMAD FASYA" },
@@ -848,36 +850,38 @@ const students = [
 ];
 
 
-// Render semua data saat pertama kali buka
-const tbody = document.getElementById('results');
-const totalEl = document.getElementById('total');
+const table   = document.getElementById('table');
+const tbody   = document.getElementById('results');
 const notfound = document.getElementById('notfound');
+const input   = document.getElementById('query');
 
-function render(data) {
+function showResults(data) {
     tbody.innerHTML = '';
     data.forEach(s => {
         tbody.innerHTML += `<tr><td>${s.nisn}</td><td>${s.nama}</td></tr>`;
     });
-    totalEl.textContent = students.length;
+    table.style.display = data.length > 0 ? 'table' : 'none';
+    notfound.style.display = data.length === 0 ? 'block' : 'none';
 }
 
-render(students); // tampilkan semua saat awal
+// Saat halaman pertama dibuka → tabel disembunyikan
+table.style.display = 'none';
+notfound.style.display = 'none';
 
-// Pencarian real-time
-document.getElementById('query').addEventListener('input', function() {
-    const q = this.value.toLowerCase().trim();
+input.addEventListener('input', function() {
+    const q = this.value.trim().toLowerCase();
+    
     if (q.length < 2) {
-        render(students);
+        table.style.display = 'none';
         notfound.style.display = 'none';
         return;
     }
-    
-    const filtered = students.filter(s => 
+
+    const hasil = students.filter(s => 
         s.nama.toLowerCase().includes(q) || s.nisn.includes(q)
     );
-    
-    render(filtered);
-    notfound.style.display = filtered.length === 0 ? 'block' : 'none';
+
+    showResults(hasil);
 });
 </script>
 
