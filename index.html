@@ -4,152 +4,115 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pencarian NISN Siswa</title>
-
-    <!-- Google Font -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-
     <style>
+        * { margin:0; padding:0; box-sizing:border-box; }
         body {
-            margin: 0;
-            padding: 0;
-            font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #3a7bd5, #00d2ff);
+            font-family: system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #667eea, #764ba2);
             min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            display: grid;
+            place-items: center;
+            padding: 15px;
         }
-
-        .container {
-            width: 90%;
-            max-width: 750px;
-            background: rgba(255, 255, 255, 0.65);
-            backdrop-filter: blur(12px);
-            padding: 30px;
-            border-radius: 20px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
-            animation: fadeIn 0.6s ease-in-out;
+        .card {
+            background: white;
+            width: 100%;
+            max-width: 620px;
+            border-radius: 18px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.25);
+            overflow: hidden;
         }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to   { opacity: 1; transform: translateY(0); }
-        }
-
-        h1 {
-            text-align: center;
-            color: #ffffff;
+        .header {
             background: #4CAF50;
-            padding: 12px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+            color: white;
+            text-align: center;
+            padding: 22px;
+            font-size: 1.4rem;
+            font-weight: 600;
         }
-
-.search-box {
-    position: relative;
-    width: 60%;
-    margin: 0 auto 20px auto;
-}
-
-.search-box input {
-    width: 100%;
-    padding: 14px 50px 14px 18px;
-    font-size: 16px;
-    border-radius: 15px;
-    border: 2px solid rgba(76, 175, 80, 0.5);
-    background: rgba(255, 255, 255, 0.55);
-    backdrop-filter: blur(8px);
-    box-shadow: 0 5px 18px rgba(0,0,0,0.15);
-    outline: none;
-    transition: all 0.25s ease-in-out;
-}
-
-.search-box input:focus {
-    border-color: #4CAF50;
-    box-shadow: 0 0 12px rgba(76, 175, 80, 0.7);
-    background: rgba(255,255,255,0.9);
-}
-
-.search-icon {
-    position: absolute;
-    right: 15px;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 22px;
-    color: #3fae43;
-    transition: 0.3s;
-}
-
-.search-box input:focus + .search-icon {
-    transform: translateY(-50%) scale(1.15);
-    color: #2d8f33;
-}
-
-
+        .search {
+            padding: 25px;
+        }
+        #query {
+            width: 100%;
+            padding: 16px 18px;
+            font-size: 1.1rem;
+            border: 2px solid #ddd;
+            border-radius: 12px;
+            outline: none;
+            transition: all 0.3s;
+        }
+        #query:focus {
+            border-color: #4CAF50;
+            box-shadow: 0 0 0 4px rgba(76,175,80,0.2);
+        }
         table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 15px;
-            background: white;
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 3px 12px rgba(0,0,0,0.15);
+            font-size: 0.98rem;
         }
-
         th {
-            background-color: #4CAF50;
+            background: #4CAF50;
             color: white;
-            padding: 12px;
+            padding: 14px 10px;
+            text-align: left;
         }
-
         td {
-            padding: 10px;
+            padding: 12px 10px;
             border-bottom: 1px solid #eee;
         }
-
-        tr:hover {
-            background-color: #f1f1f1;
-        }
-
-        .no-results {
+        tr:hover { background: #f8fff8; }
+        .info {
             text-align: center;
-            color: #ffdddd;
-            background: rgba(255, 0, 0, 0.4);
-            padding: 10px;
-            border-radius: 10px;
-            margin-top: 15px;
+            padding: 15px;
+            color: #555;
+            font-size: 0.92rem;
+        }
+        .notfound {
+            text-align: center;
+            padding: 25px;
+            color: #c0392b;
+            font-weight: 600;
+            font-size: 1.1rem;
             display: none;
+        }
+        @media (max-width: 480px) {
+            .header { font-size: 1.25rem; padding: 18px; }
+            th, td { padding: 10px 8px; font-size: 0.92rem; }
         }
     </style>
 </head>
-
 <body>
 
-<div class="container">
-    <h1>🔍 Pencarian NISN Siswa</h1>
-
-    <div class="search-box">
-        <input type="text" id="searchInput" placeholder="Ketik nama atau NISN..." onkeyup="searchStudent()">
-        <span class="search-icon">🔎</span>
+<div class="card">
+    <div class="header">Pencarian NISN Siswa</div>
+    
+    <div class="search">
+        <input type="text" id="query" placeholder="Ketik nama atau NISN siswa..." autocomplete="off" autofocus>
+        
+        <table id="table">
+            <thead>
+                <tr>
+                    <th width="32%">NISN</th>
+                    <th>Nama Lengkap</th>
+                </tr>
+            </thead>
+            <tbody id="results">
+                <!-- Data akan di-generate otomatis oleh JS -->
+            </tbody>
+        </table>
+        
+        <div id="notfound" class="notfound">Tidak ditemukan siswa dengan kata kunci tersebut</div>
     </div>
-
-    <table id="studentTable" style="display:none;">
-        <thead>
-            <tr>
-                <th>NISN</th>
-                <th>Nama</th>
-            </tr>
-        </thead>
-        <tbody id="studentTableBody"></tbody>
-    </table>
-
-    <p id="noResults" class="no-results">❌ Tidak ada hasil ditemukan</p>
+    
+    <div class="info">
+        Total siswa: <b id="total">0</b> orang • Ketik minimal 2 huruf → hasil langsung muncul
+    </div>
 </div>
+
 <script>
-    // =====================
-    // DATA SISWA (dipersingkat contoh)
-    // =====================
+// === DATA SISWA (semua data kamu sudah saya masukkan di sini) ===
 const students = [
     { nisn: "0128169545", nama: "AFIKA PUTRI HERDIANA" },
     { nisn: "3122910397", nama: "AGHNI MUHAMMAD FASYA" },
@@ -885,48 +848,38 @@ const students = [
 ];
 
 
+// Render semua data saat pertama kali buka
+const tbody = document.getElementById('results');
+const totalEl = document.getElementById('total');
+const notfound = document.getElementById('notfound');
 
-    // =====================
-    // FUNGSI PENCARIAN
-    // =====================
-    function searchStudent() {
-        const input = document.getElementById("searchInput").value.toLowerCase().trim();
-        const table = document.getElementById("studentTable");
-        const tbody = document.getElementById("studentTableBody");
-        const noResults = document.getElementById("noResults");
+function render(data) {
+    tbody.innerHTML = '';
+    data.forEach(s => {
+        tbody.innerHTML += `<tr><td>${s.nisn}</td><td>${s.nama}</td></tr>`;
+    });
+    totalEl.textContent = students.length;
+}
 
-        // Kosongkan tabel setiap pencarian
-        tbody.innerHTML = "";
+render(students); // tampilkan semua saat awal
 
-        if (input === "") {
-            table.style.display = "none";
-            noResults.style.display = "none";
-            return;
-        }
-
-        // Filter nama atau NISN
-        const filtered = students.filter(s =>
-            s.nama.toLowerCase().includes(input) ||
-            s.nisn.includes(input)
-        );
-
-        if (filtered.length === 0) {
-            table.style.display = "none";
-            noResults.style.display = "block";
-            return;
-        }
-
-        // Tampilkan hasil
-        table.style.display = "table";
-        noResults.style.display = "none";
-
-        filtered.forEach(s => {
-            const row = `<tr><td>${s.nisn}</td><td>${s.nama}</td></tr>`;
-            tbody.innerHTML += row;
-        });
+// Pencarian real-time
+document.getElementById('query').addEventListener('input', function() {
+    const q = this.value.toLowerCase().trim();
+    if (q.length < 2) {
+        render(students);
+        notfound.style.display = 'none';
+        return;
     }
+    
+    const filtered = students.filter(s => 
+        s.nama.toLowerCase().includes(q) || s.nisn.includes(q)
+    );
+    
+    render(filtered);
+    notfound.style.display = filtered.length === 0 ? 'block' : 'none';
+});
 </script>
+
 </body>
 </html>
-
-
